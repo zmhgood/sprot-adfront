@@ -148,8 +148,8 @@
         <el-form-item label="封面图片" prop="image_url">
           <ImageUpload v-model="form.image_url" />
         </el-form-item>
-        <el-form-item label="视频链接" prop="video_url">
-          <VideoUpload v-model="form.video_url" />
+        <el-form-item label="GIF动图" prop="gif_url">
+          <GifUpload v-model="form.gif_url" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -165,7 +165,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getExercises, getMuscleGroups, createExercise, updateExercise, deleteExercise } from '@/api'
 import ImageUpload from '@/components/ImageUpload.vue'
-import VideoUpload from '@/components/VideoUpload.vue'
+import GifUpload from '@/components/GifUpload.vue'
 
 const loading = ref(false)
 const submitting = ref(false)
@@ -199,7 +199,7 @@ const form = reactive({
   calories: 0,
   description: '',
   image_url: '',
-  video_url: ''
+  gif_url: ''
 })
 
 const rules = {
@@ -264,7 +264,7 @@ const resetForm = () => {
     calories: 0,
     description: '',
     image_url: '',
-    video_url: ''
+    gif_url: ''
   })
 }
 
@@ -278,7 +278,7 @@ const handleEdit = (row) => {
   resetForm()
   isEdit.value = true
   // 只复制需要的字段，避免关联对象干扰
-  const fields = ['id', 'name', 'muscle_group_id', 'target_muscle', 'difficulty', 'duration', 'sets', 'reps', 'calories', 'description', 'image_url', 'video_url']
+  const fields = ['id', 'name', 'muscle_group_id', 'target_muscle', 'difficulty', 'duration', 'sets', 'reps', 'calories', 'description', 'image_url', 'gif_url']
   fields.forEach(field => {
     if (row[field] !== undefined) {
       form[field] = row[field]
