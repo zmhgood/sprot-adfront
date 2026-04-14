@@ -11,7 +11,13 @@
       accept="image/gif"
     >
       <div v-if="modelValue" class="preview-gif">
-        <img :src="modelValue" class="gif-thumb" />
+        <img 
+          :src="modelValue" 
+          class="gif-thumb" 
+          crossorigin="anonymous" 
+          referrerpolicy="no-referrer"
+          @error="handleImageError" 
+        />
       </div>
       <div v-else class="upload-placeholder">
         <el-icon class="upload-icon"><Picture /></el-icon>
@@ -85,6 +91,11 @@ const handleError = () => {
 
 const handleClear = () => {
   emit('update:modelValue', '')
+}
+
+const handleImageError = (e) => {
+  console.error('图片加载失败:', props.modelValue, e)
+  ElMessage.error('图片加载失败，可能是跨域问题')
 }
 </script>
 
