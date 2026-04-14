@@ -12,7 +12,7 @@
     >
       <div v-if="modelValue" class="preview-gif">
         <img 
-          :src="modelValue" 
+          :src="getProxyUrl(modelValue)" 
           class="gif-thumb" 
           crossorigin="anonymous" 
           referrerpolicy="no-referrer"
@@ -53,6 +53,20 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const uploadUrl = '/api/upload/image'
+
+// 处理跨域图片URL，开发环境使用代理
+const getProxyUrl = (url) => {
+  if (!url) return ''
+  // 如果是开发环境且是COS域名，使用代理
+  if (import.meta.env.DEV && url.includes('myqcloud.com')) {
+    // 提取路径部分
+    const pathMatch = url.match(/myqcloud\.com\/(.*)/)
+    if (pathMatch) {
+      return `/cos-proxy/${pathMatch[1]}`
+    }
+  }
+  return url
+}
 
 const getHeaders = () => {
   const token = localStorage.getItem('admin_token') || ''

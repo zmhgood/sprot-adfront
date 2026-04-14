@@ -19,6 +19,17 @@ export default defineConfig(({ mode }) => {
         '/api': {
           target: env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:8080',
           changeOrigin: true
+        },
+        '/cos-proxy': {
+          target: 'https://gym-1407507629.cos.ap-chengdu.myqcloud.com',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/cos-proxy/, ''),
+          configure: (proxy) => {
+            proxy.on('proxyReq', (proxyReq) => {
+              // 移除 referer 避免 COS 安全策略拦截
+              proxyReq.removeHeader('referer')
+            })
+          }
         }
       }
     }
