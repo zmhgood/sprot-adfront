@@ -63,7 +63,7 @@
           <template #header>
             <span>用户活跃趋势</span>
           </template>
-          <div ref="chartRef" class="chart-container"></div>
+          <el-empty class="chart-container" description="暂无活跃趋势数据" />
         </el-card>
       </el-col>
       <el-col :span="8">
@@ -104,11 +104,9 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import * as echarts from 'echarts'
 import dayjs from 'dayjs'
 import request from '@/utils/request'
 
-const chartRef = ref()
 const stats = ref({
   userCount: 0,
   exerciseCount: 0,
@@ -143,40 +141,8 @@ const loadStats = async () => {
   }
 }
 
-const initChart = () => {
-  const chart = echarts.init(chartRef.value)
-  
-  const dates = []
-  const values = []
-  for (let i = 6; i >= 0; i--) {
-    dates.push(dayjs().subtract(i, 'day').format('MM-DD'))
-    values.push(Math.floor(Math.random() * 50) + 20)
-  }
-  
-  chart.setOption({
-    tooltip: { trigger: 'axis' },
-    grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
-    xAxis: {
-      type: 'category',
-      boundaryGap: false,
-      data: dates
-    },
-    yAxis: { type: 'value' },
-    series: [{
-      name: '活跃用户',
-      type: 'line',
-      smooth: true,
-      areaStyle: { opacity: 0.3 },
-      data: values
-    }]
-  })
-  
-  window.addEventListener('resize', () => chart.resize())
-}
-
 onMounted(() => {
   loadStats()
-  initChart()
 })
 </script>
 
