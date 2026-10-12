@@ -2,7 +2,7 @@
   <div class="login-container">
     <div class="login-box">
       <div class="login-header">
-        <h1>银龄健身</h1>
+        <h1>爸妈动起来</h1>
         <p>管理后台</p>
       </div>
       

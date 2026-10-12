@@ -60,7 +60,7 @@ const router = createRouter({
 
 // 路由守卫
 router.beforeEach((to, from, next) => {
-  document.title = `${to.meta.title || '银龄健身'} - 管理后台`
+  document.title = `${to.meta.title || '爸妈动起来'} - 管理后台`
   
   const userStore = useUserStore()
   const token = userStore.token || localStorage.getItem('admin_token')

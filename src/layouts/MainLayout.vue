@@ -97,7 +97,7 @@ const currentRoute = computed(() => route)
 
 // 动态配置
 const logoUrl = ref(defaultLogo)
-const siteName = ref('银龄健身')
+const siteName = ref('爸妈动起来')
 
 const toggleCollapse = () => {
   isCollapse.value = !isCollapse.value

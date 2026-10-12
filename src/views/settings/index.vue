@@ -69,7 +69,7 @@ const saving = ref(false)
 
 const form = reactive({
   logo_url: '',
-  site_name: '银龄健身',
+  site_name: '爸妈动起来',
   site_slogan: ''
 })
 
