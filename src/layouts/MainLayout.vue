@@ -85,13 +85,13 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { getConfigs } from '@/api'
-import defaultLogo from '@/assets/logo.png'
+import defaultLogo from '@/assets/logo.svg'
 
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 
-const isCollapse = ref(false)
+const isCollapse = ref(window.matchMedia('(max-width: 768px)').matches)
 const activeMenu = computed(() => route.path)
 const currentRoute = computed(() => route)
 
@@ -156,6 +156,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .main-layout {
   height: 100vh;
+  > .el-container { min-width: 0; }
 }
 
 .aside {
@@ -228,5 +229,12 @@ onMounted(() => {
 .main {
   background-color: #f5f7fa;
   padding: 20px;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .header { padding: 0 10px; }
+  .username { display: none; }
+  .main { padding: 10px; }
 }
 </style>

@@ -199,7 +199,9 @@ const form = reactive({
   calories: 0,
   description: '',
   image_url: '',
-  gif_url: ''
+  gif_url: '',
+    video_url: '',
+    sort: 0
 })
 
 const rules = {
@@ -264,7 +266,9 @@ const resetForm = () => {
     calories: 0,
     description: '',
     image_url: '',
-    gif_url: ''
+    gif_url: '',
+    video_url: '',
+    sort: 0
   })
 }
 
@@ -278,7 +282,7 @@ const handleEdit = (row) => {
   resetForm()
   isEdit.value = true
   // 只复制需要的字段，避免关联对象干扰
-  const fields = ['id', 'name', 'muscle_group_id', 'target_muscle', 'difficulty', 'duration', 'sets', 'reps', 'calories', 'description', 'image_url', 'gif_url']
+  const fields = ['id', 'name', 'muscle_group_id', 'target_muscle', 'difficulty', 'duration', 'sets', 'reps', 'calories', 'description', 'image_url', 'gif_url', 'video_url', 'sort']
   fields.forEach(field => {
     if (row[field] !== undefined) {
       form[field] = row[field]
@@ -288,6 +292,7 @@ const handleEdit = (row) => {
 }
 
 const handleSubmit = async () => {
+  if (submitting.value) return
   await formRef.value.validate()
   
   submitting.value = true

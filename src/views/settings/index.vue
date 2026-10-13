@@ -125,6 +125,7 @@ const removeLogo = () => {
 }
 
 const handleSave = async () => {
+  if (saving.value) return
   saving.value = true
   try {
     await updateConfigs({ configs: { ...form } })

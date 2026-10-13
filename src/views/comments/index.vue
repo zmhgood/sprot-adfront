@@ -119,12 +119,7 @@ const loadComments = async () => {
     comments.value = res.data?.list || []
     pagination.total = res.data?.total || 0
   } catch (error) {
-    // 如果后端API还没实现，使用模拟数据
-    comments.value = [
-      { id: 1, user: { nick_name: '张大爷', avatar_url: '' }, content: '这个动作很好，每天做十分钟，腰不酸了！', exercise: { name: '腰部拉伸' }, like_count: 5, status: 1, created_at: new Date() },
-      { id: 2, user: { nick_name: '李阿姨', avatar_url: '' }, content: '请问这个动作每次要做多久合适？', exercise: { name: '颈椎放松操' }, like_count: 2, status: 1, created_at: new Date() }
-    ]
-    pagination.total = 2
+    ElMessage.error('评论加载失败，请重试')
   } finally {
     loading.value = false
   }
@@ -151,9 +146,7 @@ const handleToggleStatus = async (row) => {
     ElMessage.success(`${action}成功`)
     loadComments()
   } catch (error) {
-    // 模拟操作
-    row.status = newStatus
-    ElMessage.success(`${action}成功`)
+    ElMessage.error(`${action}失败，请重试`)
   }
 }
 
@@ -165,9 +158,7 @@ const handleDelete = async (row) => {
     ElMessage.success('删除成功')
     loadComments()
   } catch (error) {
-    // 模拟操作
-    comments.value = comments.value.filter(c => c.id !== row.id)
-    ElMessage.success('删除成功')
+    ElMessage.error('删除失败，请重试')
   }
 }
 

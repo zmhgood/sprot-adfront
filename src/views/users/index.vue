@@ -26,6 +26,7 @@
         <span>用户列表</span>
       </template>
 
+      <el-alert v-if="loadError" :title="loadError" type="error" :closable="false" />
       <el-table :data="users" v-loading="loading" stripe>
         <el-table-column prop="id" label="ID" width="80" />
         <el-table-column label="用户信息" width="200">
@@ -91,13 +92,13 @@
       
       <el-row :gutter="20">
         <el-col :span="8">
-          <el-statistic title="累计锻炼次数" :value="userStats.totalCount" />
+          <el-statistic title="累计锻炼次数" :value="userStats?.totalCount ?? '—'" />
         </el-col>
         <el-col :span="8">
-          <el-statistic title="累计锻炼时长" :value="userStats.totalDuration" suffix="分钟" />
+          <el-statistic title="累计估算锻炼时长" :value="userStats?.totalDuration ?? '—'" suffix="分钟" />
         </el-col>
         <el-col :span="8">
-          <el-statistic title="消耗热量" :value="userStats.totalCalories" suffix="千卡" />
+          <el-statistic title="消耗热量" :value="userStats?.totalCalories ?? '暂不支持'" suffix="千卡" />
         </el-col>
       </el-row>
     </el-dialog>
@@ -110,6 +111,9 @@ import dayjs from 'dayjs'
 import request from '@/utils/request'
 
 const loading = ref(false)
+const loadError = ref('')
+let listRequestId = 0
+let detailRequestId = 0
 const detailVisible = ref(false)
 const users = ref([])
 const currentUser = ref({})
@@ -143,6 +147,8 @@ const calculateBMI = (height, weight) => {
 }
 
 const loadUsers = async () => {
+  const requestId = ++listRequestId
+  loadError.value = ''
   loading.value = true
   try {
     const res = await request.get('/admin/users', {
@@ -153,17 +159,14 @@ const loadUsers = async () => {
         gender: searchForm.gender
       }
     })
+    if (requestId !== listRequestId) return
     users.value = res.data?.list || []
     pagination.total = res.data?.total || 0
   } catch (error) {
-    // 如果后端API还没实现，使用模拟数据
-    users.value = [
-      { id: 1, nick_name: '张大爷', phone: '13800138001', gender: 1, age: 68, avatar_url: '', health_status: '腰椎间盘突出', created_at: new Date() },
-      { id: 2, nick_name: '李阿姨', phone: '13800138002', gender: 2, age: 65, avatar_url: '', health_status: '颈椎病', created_at: new Date() }
-    ]
-    pagination.total = 2
+    if (requestId !== listRequestId) return
+    loadError.value = '用户加载失败，请重试'
   } finally {
-    loading.value = false
+    if (requestId === listRequestId) loading.value = false
   }
 }
 
@@ -178,15 +181,18 @@ const handleReset = () => {
 }
 
 const handleViewDetail = async (row) => {
+  const requestId = ++detailRequestId
+  userStats.value = null
   currentUser.value = row
   detailVisible.value = true
   
   // 获取用户统计数据
   try {
     const res = await request.get(`/admin/users/${row.id}/stats`)
+    if (requestId !== detailRequestId) return
     userStats.value = res.data || { totalCount: 0, totalDuration: 0, totalCalories: 0 }
   } catch (error) {
-    userStats.value = { totalCount: 0, totalDuration: 0, totalCalories: 0 }
+    if (requestId === detailRequestId) ElMessage.error('统计加载失败，请重试')
   }
 }
 

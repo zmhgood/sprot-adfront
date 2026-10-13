@@ -19,6 +19,7 @@
         <span>家庭列表</span>
       </template>
 
+      <el-alert v-if="loadError" :title="loadError" type="error" :closable="false" />
       <el-table :data="families" v-loading="loading" stripe>
         <el-table-column prop="id" label="ID" width="80" />
         <el-table-column prop="name" label="家庭名称" min-width="150" />
@@ -104,6 +105,9 @@ import dayjs from 'dayjs'
 import { getFamilies, getFamilyDetail } from '@/api'
 
 const loading = ref(false)
+const loadError = ref('')
+let listRequestId = 0
+let detailRequestId = 0
 const detailVisible = ref(false)
 const families = ref([])
 const currentFamily = ref({})
@@ -124,25 +128,29 @@ const formatTime = (time) => {
 
 const getCreatorName = (family) => {
   if (!family.members) return '-'
-  const creator = family.members.find(m => m.role === 'admin')
+  if (family.creator?.nick_name) return family.creator.nick_name
+  const creator = family.members.find(m => m.user_id === family.creator_id)
   return creator?.user?.nick_name || '-'
 }
 
 const loadFamilies = async () => {
+  const requestId = ++listRequestId
+  loadError.value = ''
   loading.value = true
   try {
     const res = await getFamilies({
       page: pagination.page,
-      page_size: pagination.pageSize
+      page_size: pagination.pageSize,
+      keyword: searchForm.keyword
     })
+    if (requestId !== listRequestId) return
     families.value = res.data?.list || []
     pagination.total = res.data?.total || 0
   } catch (error) {
     console.error('加载家庭列表失败:', error)
-    families.value = []
-    pagination.total = 0
+    if (requestId === listRequestId) loadError.value = '家庭加载失败，请重试'
   } finally {
-    loading.value = false
+    if (requestId === listRequestId) loading.value = false
   }
 }
 
@@ -157,14 +165,15 @@ const handleReset = () => {
 }
 
 const handleViewDetail = async (row) => {
+  const requestId = ++detailRequestId
   try {
     const res = await getFamilyDetail(row.id)
+    if (requestId !== detailRequestId) return
     currentFamily.value = res.data || row
     detailVisible.value = true
   } catch (error) {
     console.error('获取家庭详情失败:', error)
-    currentFamily.value = row
-    detailVisible.value = true
+    if (requestId === detailRequestId) loadError.value = '家庭详情加载失败，请重试'
   }
 }
 
