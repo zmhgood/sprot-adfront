@@ -91,14 +91,11 @@
       <el-divider>运动统计</el-divider>
       
       <el-row :gutter="20">
-        <el-col :span="8">
+        <el-col :span="12">
           <el-statistic title="累计锻炼次数" :value="userStats?.totalCount ?? '—'" />
         </el-col>
-        <el-col :span="8">
+        <el-col :span="12">
           <el-statistic title="累计估算锻炼时长" :value="userStats?.totalDuration ?? '—'" suffix="分钟" />
-        </el-col>
-        <el-col :span="8">
-          <el-statistic title="消耗热量" :value="userStats?.totalCalories ?? '暂不支持'" suffix="千卡" />
         </el-col>
       </el-row>
     </el-dialog>

@@ -57,7 +57,6 @@
         </el-table-column>
         <el-table-column prop="duration" label="时长(分钟)" width="100" />
         <el-table-column prop="sets" label="组数" width="80" />
-        <el-table-column prop="calories" label="消耗热量" width="100" />
         <el-table-column label="操作" width="200" fixed="right">
           <template #default="{ row }">
             <el-button type="primary" link @click="handleEdit(row)">编辑</el-button>
@@ -123,19 +122,14 @@
           </el-col>
         </el-row>
         <el-row :gutter="20">
-          <el-col :span="8">
+          <el-col :span="12">
             <el-form-item label="时长(分钟)" prop="duration">
               <el-input-number v-model="form.duration" :min="1" :max="60" />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="12">
             <el-form-item label="组数" prop="sets">
               <el-input-number v-model="form.sets" :min="1" :max="10" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="消耗热量" prop="calories">
-              <el-input-number v-model="form.calories" :min="0" />
             </el-form-item>
           </el-col>
         </el-row>
