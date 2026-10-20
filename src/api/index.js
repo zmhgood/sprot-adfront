@@ -121,3 +121,7 @@ export function getConfigs() {
 export function updateConfigs(data) {
   return request.post('/admin/configs', data)
 }
+
+// 首页轮播图
+export function getBanners() { return request.get('/admin/banners') }
+export function saveBanners(data) { return request.put('/admin/banners', data) }

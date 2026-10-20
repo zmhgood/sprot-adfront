@@ -35,6 +35,10 @@
           <el-icon><House /></el-icon>
           <span>家庭管理</span>
         </el-menu-item>
+        <el-menu-item index="/banners">
+          <el-icon><Picture /></el-icon>
+          <span>首页轮播图</span>
+        </el-menu-item>
         <el-menu-item index="/settings">
           <el-icon><Setting /></el-icon>
           <span>系统设置</span>

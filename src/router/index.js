@@ -44,6 +44,12 @@ const routes = [
         meta: { title: '家庭管理', icon: 'House' }
       },
       {
+        path: 'banners',
+        name: 'Banners',
+        component: () => import('@/views/banners/index.vue'),
+        meta: { title: '首页轮播图', icon: 'Picture' }
+      },
+      {
         path: 'settings',
         name: 'Settings',
         component: () => import('@/views/settings/index.vue'),
