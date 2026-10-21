@@ -89,8 +89,8 @@ export function deleteComment(id) {
 // ============ 数据统计 ============
 
 // 获取概览统计
-export function getDashboardStats() {
-  return request.get('/admin/stats/dashboard')
+export function getDashboardStats(params) {
+  return request.get('/admin/stats/dashboard', { params })
 }
 
 // 获取趋势数据
