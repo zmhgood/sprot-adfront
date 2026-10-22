@@ -1,7 +1,7 @@
 <template>
   <div>
     <div ref="container" class="activity-chart" role="img" :aria-label="chartLabel"></div>
-    <p v-if="!data.some(day => day.userCount > 0)" class="zero-tip">该时段暂无锻炼记录，每日人数均为0。</p>
+    <p v-if="!data.some(day => day[valueKey] > 0)" class="zero-tip">{{ zeroMessage }}</p>
   </div>
 </template>
 
@@ -13,18 +13,25 @@ import { GridComponent, TooltipComponent } from 'echarts/components'
 import { SVGRenderer } from 'echarts/renderers'
 
 use([LineChart, GridComponent, TooltipComponent, SVGRenderer])
-const props = defineProps({ data: { type: Array, required: true } })
+const props = defineProps({
+  data: { type: Array, required: true },
+  valueKey: { type: String, default: 'userCount' },
+  seriesName: { type: String, default: '锻炼人数' },
+  unit: { type: String, default: '人' },
+  axisName: { type: String, default: '人数' },
+  zeroMessage: { type: String, default: '该时段暂无锻炼记录，每日人数均为0。' }
+})
 const container = ref(null)
-const chartLabel = computed(() => '每日锻炼人数：' + props.data.map(day => `${day.date} ${day.userCount}人`).join('，'))
+const chartLabel = computed(() => `${props.seriesName}：` + props.data.map(day => `${day.date} ${day[props.valueKey]}${props.unit}`).join('，'))
 let chart, observer
 function render() {
   chart?.setOption({
     animation: false,
     grid: { left: 12, right: 20, top: 28, bottom: 14, containLabel: true },
-    tooltip: { trigger: 'axis', confine: true, valueFormatter: value => `${value}人` },
+    tooltip: { trigger: 'axis', confine: true, valueFormatter: value => `${value}${props.unit}` },
     xAxis: { type: 'category', boundaryGap: false, data: props.data.map(day => day.date), axisLabel: { formatter: value => value.slice(5), hideOverlap: true } },
-    yAxis: { type: 'value', min: 0, minInterval: 1, name: '人数', nameGap: 12 },
-    series: [{ name: '锻炼人数', type: 'line', data: props.data.map(day => day.userCount), symbolSize: 6, lineStyle: { color: '#176B73' }, itemStyle: { color: '#176B73' }, areaStyle: { color: '#EAF6F4' } }]
+    yAxis: { type: 'value', min: 0, minInterval: 1, name: props.axisName, nameGap: 12 },
+    series: [{ name: props.seriesName, type: 'line', data: props.data.map(day => day[props.valueKey]), symbolSize: 6, lineStyle: { color: '#176B73' }, itemStyle: { color: '#176B73' }, areaStyle: { color: '#EAF6F4' } }]
   }, true)
 }
 onMounted(() => {

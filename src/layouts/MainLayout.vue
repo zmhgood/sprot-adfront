@@ -85,7 +85,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { getConfigs } from '@/api'
@@ -95,7 +95,11 @@ const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 
-const isCollapse = ref(window.matchMedia('(max-width: 768px)').matches)
+const narrowViewport = window.matchMedia('(max-width: 768px)')
+const isCollapse = ref(narrowViewport.matches)
+const collapseOnNarrowViewport = event => {
+  if (event.matches) isCollapse.value = true
+}
 const activeMenu = computed(() => route.path)
 const currentRoute = computed(() => route)
 
@@ -146,6 +150,7 @@ const handleConfigUpdate = (e) => {
 }
 
 onMounted(() => {
+  narrowViewport.addEventListener('change', collapseOnNarrowViewport)
   // 确保加载用户信息
   if (!userStore.userInfo && userStore.token) {
     userStore.getUserInfo().catch(err => {
@@ -155,6 +160,7 @@ onMounted(() => {
   loadConfigs()
   window.addEventListener('config-updated', handleConfigUpdate)
 })
+onBeforeUnmount(() => narrowViewport.removeEventListener('change', collapseOnNarrowViewport))
 </script>
 
 <style lang="scss" scoped>

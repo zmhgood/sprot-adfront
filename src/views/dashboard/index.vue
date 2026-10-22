@@ -91,6 +91,23 @@
       </el-col>
     </el-row>
 
+    <template v-if="statsLoaded">
+      <el-row :gutter="20" class="engagement-row">
+        <el-col :xs="24" :md="12"><ActivationCard :metric="stats.engagement.activation" /></el-col>
+        <el-col :xs="24" :md="12"><WeeklyExerciseDays :data="stats.engagement.weeklyExerciseDays" /></el-col>
+      </el-row>
+      <el-row :gutter="20" class="engagement-row">
+        <el-col :xs="24" :md="12"><WeeklyRetention :data="stats.engagement.weeklyRetention" /></el-col>
+        <el-col :xs="24" :md="12">
+          <el-card shadow="hover" class="family-card">
+            <template #header><div class="family-title"><span>活跃家庭趋势</span><strong>{{ stats.engagement.families.activeCount }} 个期间去重家庭</strong></div></template>
+            <p class="metric-description">当天至少完成一组的家庭数；期间去重，不累加每日家庭数。</p>
+            <ActivityTrend :data="stats.engagement.families.daily" value-key="familyCount" series-name="活跃家庭" unit="个" axis-name="家庭数" zero-message="该时段暂无活跃家庭，每日家庭数均为0。" />
+          </el-card>
+        </el-col>
+      </el-row>
+    </template>
+
     <!-- 最近评论 -->
     <el-card shadow="hover" class="recent-comments">
       <template #header>
@@ -116,6 +133,9 @@ import dayjs from 'dayjs'
 import { getDashboardStats } from '@/api'
 import { validateDashboard } from '@/utils/dashboard'
 import ActivityTrend from './ActivityTrend.vue'
+import ActivationCard from './ActivationCard.vue'
+import WeeklyExerciseDays from './WeeklyExerciseDays.vue'
+import WeeklyRetention from './WeeklyRetention.vue'
 
 const stats = ref({ userCount: 0, exerciseCount: 0, commentCount: 0, todayRecordCount: 0, dailyActivity: [], hotExercises: [] })
 const recentComments = ref([])
@@ -235,6 +255,10 @@ onMounted(loadStats)
       }
     }
   }
+  .engagement-row { margin-bottom: 20px; }
+  .engagement-row > .el-col { margin-bottom: 20px; min-width: 0; }
+  .family-title { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  .family-title strong { color: #176B73; font-size: 14px; }
 }
 @media (max-width: 600px) {
   .dashboard .analysis-toolbar .el-radio-group { width: 100%; flex-wrap: nowrap; }
